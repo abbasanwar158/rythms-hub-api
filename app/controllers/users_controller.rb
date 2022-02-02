@@ -10,8 +10,13 @@ class UsersController < ApplicationController
   end
 
   def create
-    @userCreate = User.new(permit_user_params).save
-    render json: @userCreate
+    @user = User.new(permit_user_params)
+    if @user && @user.authenticate(params[:password])
+      @user.save!
+      render json: @user
+    else
+      render json: @user.errors
+    end
   end
 
   def update
